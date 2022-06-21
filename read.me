@@ -1,0 +1,5 @@
+oc create -f pacman-placement.yaml 
+oc apply -f appset-skupper-pacman.yaml
+
+oc label managedcluster sno10  link-to-central-pacman=True
+oc label managedcluster sno11  link-to-central-pacman=True

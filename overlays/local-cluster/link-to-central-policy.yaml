@@ -1,0 +1,75 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: link-to-central-pacman
+  namespace: pacman
+  annotations:
+    policy.open-cluster-management.io/standards: Infrastructure security
+    policy.open-cluster-management.io/categories: Data security
+    policy.open-cluster-management.io/controls: PR.DS-1 Data-at-rest
+    policy.open-cluster-management.io/trigger-update: ""
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: create-secret-from-configmap
+        spec:
+          remediationAction: enforce
+          severity: high
+          namespaceSelector:
+            exclude:
+              - openshift-*
+              - kube-*
+            include:
+              - pacman
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                kind: Secret
+                apiVersion: v1
+                metadata:
+                  name: link-to-central-pacman
+                  namespace: pacman
+                  labels:
+                    skupper.io/type: connection-token
+                  annotations:
+                    edge-host: '{{hub ( index ( lookup "v1"  "Secret" "pacman" "link-to-central-pacman").metadata.annotations "edge-host" ) hub}}'
+                    edge-port: '443'
+                    inter-router-host: '{{hub ( index ( lookup "v1"  "Secret" "pacman" "link-to-central-pacman").metadata.annotations "inter-router-host" ) hub}}'
+                    inter-router-port: '443'
+                data:
+                  ca.crt: '{{hub ( index ( lookup "v1"  "Secret" "pacman" "link-to-central-pacman").data "ca.crt" ) hub}}'
+                  tls.key: '{{hub ( index ( lookup "v1"  "Secret" "pacman" "link-to-central-pacman").data "tls.key" ) hub}}'
+                  tls.crt: '{{hub ( index ( lookup "v1"  "Secret" "pacman" "link-to-central-pacman").data "tls.crt" ) hub}}'
+                type: Opaque
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: link-to-central-binding-pacman
+  namespace: pacman
+placementRef:
+  name: link-to-central-clusters-pacman
+  kind: PlacementRule
+  apiGroup: apps.open-cluster-management.io
+subjects:
+  - name: link-to-central-pacman
+    kind: Policy
+    apiGroup: policy.open-cluster-management.io
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: link-to-central-clusters-pacman
+  namespace: pacman
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchLabels:
+      link-to-central-pacman: "True"

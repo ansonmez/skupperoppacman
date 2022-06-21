@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ../../base/operator
+  - ../../base/instance
+
+resources:
+  - link-to-central-secret.yaml
+  - link-to-central-policy.yaml
+
+patches:
+-  target:
+     kind: ConfigMap
+     name: skupper-site
+   patch: |-
+    - op: replace
+      path: /data/name
+      value: snomgm
+    - op: replace
+      path: /data/console-authentication
+      value: openshift

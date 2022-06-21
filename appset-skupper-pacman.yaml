@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: skupperpacman
+  namespace: openshift-gitops
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: pacman-clusters
+        requeueAfterSeconds: 10
+  template:
+    metadata:
+      name: 'skupper-pacman-{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/ansonmez/skupperoppacman'
+        targetRevision: main
+        path: 'overlays/{{name}}'
+      destination:
+        server: '{{server}}'
+        namespace: pacman
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: false
+        syncOptions:
+          - CreateNamespace=true
+      ignoreDifferences:
+      - group: ""
+        kind: Secret
+        jsonPointers:
+        - /data

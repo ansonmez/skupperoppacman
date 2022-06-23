@@ -13,7 +13,7 @@ spec:
         requeueAfterSeconds: 10
   template:
     metadata:
-      name: 'skupper-pacman-{{name}}'
+      name: 'skupperpacman-{{name}}'
     spec:
       project: default
       source:

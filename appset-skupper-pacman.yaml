@@ -9,7 +9,7 @@ spec:
         configMapRef: acm-placement
         labelSelector:
           matchLabels:
-            cluster.open-cluster-management.io/placement: online-boutique-clusters
+            cluster.open-cluster-management.io/placement: skupperpacman-placement
         requeueAfterSeconds: 10
   template:
     metadata:

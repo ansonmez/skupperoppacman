@@ -6,10 +6,7 @@ metadata:
   namespace: openshift-gitops
 spec:
   predicates:
-    - requiredClusterSelector:
-        labelSelector:
-          matchExpressions:
-            - key: pacman-skupper-operator
-              operator: In
-              values:
-                - "true"
+  - requiredClusterSelector:
+      labelSelector:
+        matchLabels:
+          pacman-skupper-operator : "True"

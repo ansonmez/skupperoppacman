@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: skupper-pacman
-  namespace: pacman
-data:
-  name: CHANGEME
-  console-authentication: internal
-  router-console: "true"

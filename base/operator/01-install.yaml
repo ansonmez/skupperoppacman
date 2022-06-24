@@ -23,4 +23,3 @@ spec:
   name: skupper-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: skupper-operator.v1.0.0

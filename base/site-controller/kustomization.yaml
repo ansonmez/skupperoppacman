@@ -4,4 +4,4 @@ kind: Kustomization
 
 resources:
   - 01-install.yaml
-  - https://raw.githubusercontent.com/skupperproject/skupper/1.0.2/cmd/site-controller/deploy-watch-current-ns.yaml
+  - https://raw.githubusercontent.com/skupperproject/skupper/1.0.0/cmd/site-controller/deploy-watch-current-ns.yaml
